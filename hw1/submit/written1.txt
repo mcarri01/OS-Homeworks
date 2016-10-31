@@ -1,0 +1,26 @@
+COMP 111 HW1 written.txt
+Matthew Carrington-Fair
+
+Written #1
+Please complete the following problems from pp 103-104 of your textbook.
+
+2.1 What are three objectives of an OS design?
+    1. Efficiency
+    2. Convenience
+    3. Ability to evolve (ability to introduce new systems & permit development).
+2.2 What is the kernel of an OS? 
+    The kernel is a protected and trusted space within the OS that operates similarly to the user space except without restrictions. It is responsible for managing CPU and memory usage of various processes that run, and as a whole managing user applications. 
+
+Written #2
+10 points
+Most hardware architectures provide an instruction to return from an interrupt, such as iret. This instruction switches the mode of operation from kernel-mode to user-mode. Explain what happens if an application program executes this instruction.
+
+The OS saves the state of the device or process handling the interrupt, and indicates that the interrupt as been serviced (as to remove it from the interrupt queue pending in the interrupt stage of the instruction cycle). It then retrieves the save state of the application from the stack so that it continues from the point when the interrupt occured and perfroms a context switch. 
+
+
+Written #3
+10 points
+In your own words, explain the steps that an OS goes through when the CPU receives an interrupt.
+
+During the instruction cycle process, the OS will check if the CPU received any interrupts during the interrupt stage (following the execution stage). If an interrupt is present the OS launches the interrupt handler. The interrupt handler determines the interrupt's priority and type, and is then responsible for suspending the current operation of the instruction cycle to service whichever process or device triggered the interrupt. Once the interrupt is serviced, the OS will hand control back to the instruction cycle so the original user process can proceed.  
+

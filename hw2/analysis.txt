@@ -1,0 +1,96 @@
+HW2 COMP111
+analysis.txt 
+Matthew Carrington-Fair
+
+This experiment tests five procedure calls to a particular system call (getpid()) to test the difference in time to perform each function, in order to get a better understanding of how expensive a system call is in terms of time, and understanding the reason for system call overhead.
+
+
+To get visible/non-trivial results, for each call (whether it be the system call to getpid() or a procedure call) I looped all computations/actual procedures in a loop from 0-1,000,000,000. For example, when determining the time cost of getpid() I called getpid 1,000,000,000 times. In each procedure call, I execute the actual procedure within this same loop to create an identical amount of overhead between the procedures.
+
+
+Evolution of the Procedures - 
+
+System Call:
+    - Each iteration of the loop calls getpid().
+Procedure One: 
+    - Does nothing, simply goes through the loop. 
+Procedure Two:
+    - One variable initialization and setting variable to loop counter
+    - One conditonal
+Procedure Three:
+    - Two variable initializations
+    - One conditional (with embedded computation/addition)
+Procedure Four:
+    - Two variable initializations
+    - One += operation
+    - Two conditionals (first w/ subtraction embedded, second w/ addition)
+Procedure Five:
+    -Two variable initializations
+    -One += operations
+    -Two conditionals (first w/ subtraction embedded, second w/ addition)
+    -One extra "++" operation after last conditional
+
+Here are sample runs of timing the processes, with the first being the system call getpid(). Each procedure is looped the same amount.
+
+RUN #1 
+
+Printing System Call (getpid)
+Time: 5.07884 seconds
+
+Printing Procedure: 1
+Time: 3.25123 seconds
+
+Printing Procedure: 2
+Time: 3.61711 seconds
+
+Printing Procedure: 3
+Time: 3.97838 seconds
+
+Printing Procedure: 4
+Time: 4.59458 seconds
+
+Printing Procedure: 5
+Time: 5.066 seconds
+
+RUN #2
+
+Printing System Call (getpid)
+Time: 5.05877 seconds
+
+Printing Procedure: 1
+Time: 3.24738 seconds
+
+Printing Procedure: 2
+Time: 3.64639 seconds
+
+Printing Procedure: 3
+Time: 3.75761 seconds
+
+Printing Procedure: 4
+Time: 4.71305 seconds
+
+Printing Procedure: 5
+Time: 5.01813 seconds
+
+RUN #3
+
+Printing System Call (getpid)
+Time: 5.06368 seconds
+
+Printing Procedure: 1
+Time: 3.25138 seconds
+
+Printing Procedure: 2
+Time: 3.61211 seconds
+
+Printing Procedure: 3
+Time: 3.95621 seconds
+
+Printing Procedure: 4
+Time: 4.60153 seconds
+
+Printing Procedure: 5
+Time: 5.01546 seconds
+
+
+By Procedure Five, the times are near similar. This indicates that the cost of having to call getpid() is approximately the same as several variable initializations and assignments, conditionals, and additons/subtractions. However, this includes time it takes when switching between user and kernel mode, which is the bulk of the overhead with getpid(). For example, system calls require dealing with context switches, which significantly slows down the operation because of the necessity of saving state of the current process despite there being very little workload itself in the function. 

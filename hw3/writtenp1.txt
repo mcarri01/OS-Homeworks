@@ -1,0 +1,59 @@
+Written #1 HW1
+Matthew Carrington-Fair
+
+2.1
+
+Question:
+Suppose that we have a multiprogrammed computer in which each job has identical
+characteristics. In one computation period, T , for a job, half the time is spent in I/O and the other half in processor activity. Each job runs for a total of N periods. Assume that a simple round-robin scheduling is used, and that I/O operations can overlap with processor operation. Define the following quantities:
+
+• Turnaround time = actual time to complete a job
+• Throughput = average number of jobs completed per time period T
+• Processor utilization = percentage of time that the processor is active (not waiting)
+ Compute these quantities for one, two, and four simultaneous jobs, assuming that the period T is distributed in each of the following ways:
+a. I/O first half, processor second half
+b. I/O first and fourth quarters, processor second and third quarter
+
+
+Answer:
+
+a. 
+One job:
+Turnaround time: N * T
+Throughput: 1/N
+Processor utilization: 50% 
+
+Two jobs:
+Turnaround time: N * T
+Throughput: 2/N
+Processor utilization: 100%
+
+Four jobs:
+Turnaround time: 2N * T
+Throughput: 4/N
+Processor utilization: 100%
+
+
+b.
+One job:
+Turnaround time: N * T
+Throughput: 1/N
+Processor utilization: 50%
+
+Two job:
+Turnaround time: N * T
+Throughput: 2/N
+Processor utilization: 100%
+
+Four job:
+Turnaround time: 2N * T 
+Throughput: 4/N
+Processor utilization: 100%
+
+2.2
+
+Question:
+An I/O-bound program is one that, if run alone, would spend more time waiting for I/O than using the processor. A processor-bound program is the opposite. Suppose a short-term scheduling algorithm favors those programs that have used little processor time in the recent past. Explain why this algorithm favors I/O-bound programs and yet does not permanently deny processor time to processor-bound programs. 
+
+Answer:
+By favoring programs that have used little processor time recently, it would obviously prioritize and favor any I/O-bound programs. While this would reduce the amount of time spent in processor-bound programs, eventually their processor time would dimish enough to warrant increased priority in accordance with the algorithm favoring little processor time to cause the program to get scheduled.

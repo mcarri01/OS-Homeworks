@@ -1,0 +1,115 @@
+COMP 111 HW1 - analysis.txt
+Matthew Carrington-Fair
+Description of Program:
+
+For this experiment, I used a program written in COMP40 called "um". um (standing for Universal Machine) was a Universal Machine emulator that would behave as per the specifications of a "Universal Machine" (containing eight 32-bit registers, main memory composed of memory "segments", handling various arithmetic and logical instructions along with managing memory segments and program loading). This version was a profiled UM specifically optimized for speed. I modified the program to automatically load a benchmark test used for one of our assignments to see how fast our UM could fetch, decode, and execute instructions from a UM binary. The benchmark (orignially taking the program ~203 seconds) was reduced to taking ~17.5 seconds to complete, so it was a substantial program with many operations including creating and storing segments of allocated memory, storing, and loading values. The goal of the program is simply to complete all the instructions stored in the "sandmark.umz" file as quickly as possible. 
+
+Summary of Times:
+
+For this experiment I measured the following:
+
+utime - User time of the calling process (or parent process). Basically, time spent from within the caller process during the execution of the loaded program by the child.
+
+stime - System time of the calling process. This measured time spent perforing system calls from within the parent process (for example, launching fork, along with calling waitpid).
+
+cutime - User time for the child process. The majority of time spent was within cutime due to the fact that this included all user time spent in the executed process. All instructions (that don't include system calls) performed by the child process would fall into this category
+
+cstime - System time for the child process. This would be calls to execve that the child performs when loading up the new program, along with any system calls within that specific process. 
+
+These times are important because they give insight into how programs we write that operate as processes within the OS. Understanding the distinction of when a process is running in the user space as opposed to making system calls is essential in understanding what resources of the OS we are utilizing at a given time in our programs. In addition, understanding the distinction in time spent between parent and child processes and how they can operate concurrently is important in understanding efficiency.
+
+Summary of Results:
+
+For my results, I recorded six different instances of running the experiment. 
+
+The first three are with no additional computations or instructions in the parent process after launching the child process. Once the processes forked, the parent would immediately wait until the child process finished before stopping the timers and printing the results. Because of this, no time was actually spent in the parent process while the child process was operating. As a result, the child process dominates and comprises the entirety of the wall clock time of the loaded up program.  
+
+I ran the tests first with only creating a single child to run an instance of the program, then followed by increasing the number to three children (each running the program sequentially), and finally with five children.
+
+ONE CHILD - 
+
+Total executable time: 18.050000
+****** Calling Process ******
+User time of calling process: 0.000000
+System time of calling process : 0.000000
+****** Child Process ******
+User time of child: 18.050000
+System time of child: 0.010000
+
+****** End times ******
+
+
+THREE CHILDREN - 
+
+Total executable time: 54.280000
+****** Calling Process ******
+User time of calling process: 0.000000
+System time of calling process : 0.000000
+****** Child Process ******
+User time of child: 54.280000
+System time of child: 0.020000
+
+
+FIVE CHILDREN - 
+
+Total executable time: 90.460000
+****** Calling Process ******
+User time of calling process: 0.000000
+System time of calling process : 0.000000
+****** Child Process ******
+User time of child: 89.930000
+System time of child: 0.070000
+****** End times ******
+
+Because no time is spent in the parent process while executing the program within the various child processes, user time + system time of the child (cutime/cstime) equals approximately the total executable time. The user time of the child vastly outweighed the system time, simply due to the fact that the majority of the process it was executing was limited to "local" operations (not having to perform system calls). This would illustrate that besides the obvious system call to execve to load up the program, there are very limited system calls within the loaded program. This point is especially true when comparing how between one, three, and five children the system time for the child process either doesn't change or is only slightly different as opposed to the user time which grows nearly linearly - O(n). 
+
+
+From here I decided to add additional computation to the parent process that it would execute simultaneously while the children processes loaded up and executed the program. 
+
+volatile unsigned long long i;
+for (i = 0; i < 1000000000ULL; ++i);
+
+In this instance, instead of simply waiting for the child process to finish and idling, there would be time spent within the caller process.
+
+With that small addition, the following were my times for one child, three children, and five children processes. 
+
+ONE CHILD - 
+
+Total executable time: 17.850000
+****** Calling Process ******
+User time of calling process: 3.650000
+System time of calling process : 0.010000
+****** Child Process ******
+User time of child: 17.830000
+System time of child: 0.010000
+
+****** End times ******
+
+THREE CHILDREN - 
+
+
+Total executable time: 56.950000
+****** Calling Process ******
+User time of calling process: 10.900000
+System time of calling process : 0.020000
+****** Child Process ******
+User time of child: 56.630000
+System time of child: 0.320000
+
+****** End times ******
+
+
+FIVE CHILDREN - 
+
+Total executable time: 94.580000
+****** Calling Process ******
+User time of calling process: 18.130000
+System time of calling process : 0.070000
+****** Child Process ******
+User time of child: 94.170000
+System time of child: 0.460000
+
+
+While the system time for the caller process was still neglibile (albeit increasing proportionally to the number of children), the addition of this computation still had an impact in increasing time spent within the caller process. More noticably, it had a much more significant impact on the user time for the calling process. Similarly to the cutime, the utime increases linearly - O(n) for each child process added (as seen in the previous tests).
+
+Different from the previous tests however, is the total sum of the times in these tests do NOT add up to the wall clock time, because they run concurrently. The time for the caller process occurs simultaneously as the child process executes the program, and so there is an overlap in times. However, the times for each process occur sequentially, a single process can't be operating in the user space and in system calls simultaneously as seen when there was no computation done in the parent process. In both test cases, by adding up the user time and system time for that process do you have the total time spent within that process. The same does not apply when adding times between processes. 

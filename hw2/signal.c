@@ -1,0 +1,43 @@
+/*
+*	signal.c
+*	Written by: Matthew Carrington-Fair
+*
+*	This program practices uses Unix signal handling to 
+*	receive asynchronous responses from the SIGALARM signal.
+*
+*	To begin, it sets up the signal handler for the particular signal
+*	(in this case SIGALRM). This specifies that the program will handle 
+*	the signal (rather than have it be ignored or perform its default action).
+*	
+*	The process then performs the system call alarm() to have the kernel set
+*	an alarm for the time designated by ALRM_TIME (in this case, 5 seconds).
+*
+*	This way, once the alarm goes off, the kernel sends a SIGALARM to the
+*	process which is then caught and handled by the previously speicified
+*	signal handler for SIGALARM. This handler prints to indicate that
+*	it has been called to handle the signal, and then terminates the
+*	program by calling exit(EXIT_SUCCESS). The process ends up bypassing
+*	the infinite loop in main asynchronously by having the signal handler
+*   exit the process after it has received the alarm signal from the kernel.
+*
+*
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+/* Time for the alarm */
+int ALRM_TIME = 5;
+
+void alarm_handler();
+int main(int argc, char *argv[]) {
+	signal(SIGALRM, alarm_handler);
+	alarm(ALRM_TIME);
+	while(1);
+}
+/* Signal handler for SIGALARM*/
+void alarm_handler() {
+	printf("Alarm handler called!\n");
+	exit(EXIT_SUCCESS);
+}

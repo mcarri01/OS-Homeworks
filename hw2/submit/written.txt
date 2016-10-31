@@ -1,0 +1,49 @@
+HW2 COMP111 
+written.txt
+Matthew Carrington-Fair
+
+Question 1
+Can Unix fork() return an error? Why or why not?
+
+It can if there is a lack of resources of memory available when the call is made, in which case it will return with a "-1". If there are too many given processes running at once, or not enough physical memory availble to allocate, the OS may not be able to properly initialize a new process.
+
+Question 2
+Why is there no process transition from ready to blocked?
+
+A process cannot be moved to blocked without it currently being executed, as it requires a request to the OS (whether it be requesting some service of the OS that can't be immediately available or waiting on an I/O device). If the process isn't currently running, it wouldn't be able to perform the request to the OS. 
+
+Question 3
+Write down the list of process state transitions that occur during the following C code snippet. You may assume that this is the only process that the CPU is executing.
+int i = 1;
+while (i < 100) { 
+i++; 
+}
+printf("%d ", i);
+while (i > 0) { 
+i--; 
+}
+printf("%d ", i);
+
+
+Beginning of procedure
+    New -> Ready
+
+Process starts and performs first loop
+    Ready -> Running
+
+Moves to blocked to print
+    Running -> Blocked
+
+Prepares process to run again once printing is finished
+    Blocked -> Ready
+
+Moves process to running for second loop
+    Ready -> Running
+
+Moves to blocked to print again
+    Running -> Blocked
+
+Moves process back to running, where it finishes and terminates
+    Blocked -> Ready
+    Ready -> Running
+    Running -> Exit
