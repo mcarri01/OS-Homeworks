@@ -76,8 +76,8 @@ void *count_words(void *file) {
 	/* Loops through each file */
 	while ((c = fgetc(fp)) != EOF) {
 		/* Will indicate it's a word if hits whitespace or CRLS*/
-		if (c == WHITE_SPACE || c == '\r') {
-			if (prev != WHITE_SPACE && prev != '\r') {
+		if (c == WHITE_SPACE || c == '\r' || c == '\n') {
+			if (prev != WHITE_SPACE && prev != '\r' && prev != '\n') {
 				(*word_count)++;
 			}
 		}
